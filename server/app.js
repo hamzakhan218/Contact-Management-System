@@ -1,6 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
+const connectDB = require('./config/db')
+
+
 const app = express()
 
 
@@ -12,7 +15,7 @@ app.use(morgan('tiny'))
 
 app.get("/", (req,res) => {
     res.send("Hello World")
-})
+}) 
 
 
 //server configurations
@@ -20,6 +23,11 @@ app.get("/", (req,res) => {
 
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+   try {
+    await connectDB();
     console.log('Server is listening on port ' + PORT)
+   } catch (error) {
+    console.log(error)
+   }
 })
