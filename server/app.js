@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 const router = require("./routes/auth");
 
+const auth = require("./middlewares/auth");
+
 const app = express();
 
 //middlewares
@@ -11,7 +13,9 @@ const app = express();
 app.use(express.json());
 app.use(morgan("tiny"));
 //routes
-
+// app.get("/protected", auth, (req, res) => {
+//   return res.status(200).json({ ...req.user._doc });
+// });
 app.use("/api", router);
 
 //server configurations
