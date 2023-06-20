@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const path = require("path");
+const auth = require("../middlewares/auth");
 
 require("dotenv").config({
   path: path.resolve(__dirname, "../config/config.env"),
@@ -87,11 +88,15 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    return res.status(200).json({ token });
+    const user = { ...doesUserExists._doc, password: undefined };
+    return res.status(200).json({ token, user });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error.message });
   }
 });
 
+router.get("/me", auth, async (req, res) => {
+  return res.status(200).json({ ...req.user._doc });
+});
 module.exports = router;

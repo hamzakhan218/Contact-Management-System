@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const AuthContext = createContext();
@@ -6,6 +6,24 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  //check if user is logged in
+  const checkUserLoggedIn = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/api/me", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const result = await res.json();
+      if (!result.error) {
+        setUser(result);
+      } else {
+        // console.log(result.error);
+        // toast.error(result.error);
+      }
+    } catch (error) {}
+  };
   //login request
   const loginUser = async (userData) => {
     try {
@@ -18,7 +36,10 @@ export const AuthContextProvider = ({ children }) => {
       });
       const result = await res.json();
       if (!result.error) {
+        console.log(result);
         localStorage.setItem("token", result.token);
+        setUser(result.user);
+        toast.success("User Loggen in");
       } else {
         toast.error(result.error);
       }
@@ -38,7 +59,7 @@ export const AuthContextProvider = ({ children }) => {
       });
       const result = await res.json();
       if (!result.error) {
-        localStorage.setItem("token", result.token);
+        toast.success("User is registered. Please Login");
       } else {
         toast.error(result.error);
       }
@@ -47,8 +68,12 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    checkUserLoggedIn();
+  });
+
   return (
-    <AuthContext.Provider value={{ loginUser, registerUser }}>
+    <AuthContext.Provider value={{ loginUser, registerUser, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
