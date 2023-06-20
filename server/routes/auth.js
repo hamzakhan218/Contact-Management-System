@@ -8,9 +8,8 @@ require("dotenv").config({
   path: path.resolve(__dirname, "../config/config.env"),
 });
 
-router.post("/login");
-
 router.post("/register", async (req, res) => {
+  console.log(req.body);
   const { name, email, password } = req.body;
   if (!name || !email || !password)
     return res.status(400).json({ error: "Please enter all the details" });
