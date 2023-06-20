@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,12 +7,21 @@ import AuthContext from "../../context/AuthContext";
 
 function Login() {
   const { register, handleSubmit } = useForm();
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser, user, setUser } = useContext(AuthContext);
+  let navigate = useNavigate();
+
   const notify = (msg) => toast(msg);
 
   const onSubmit = async (data) => {
     await loginUser(data);
+    navigate("/", { replace: true });
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
       <div className="px-[20rem] py-10">

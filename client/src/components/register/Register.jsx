@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthContext from "../../context/AuthContext";
@@ -8,6 +8,8 @@ import AuthContext from "../../context/AuthContext";
 function Register() {
   const { register, handleSubmit } = useForm();
   const { registerUser } = useContext(AuthContext);
+  let navigate = useNavigate();
+
   const notify = (msg) => toast(msg);
 
   const onSubmit = async (data) => {
@@ -19,8 +21,17 @@ function Register() {
         email: data.email,
         password: data.password,
       });
+
+      navigate("/login", { replace: true });
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <>
       <div className="px-[20rem] py-10">
