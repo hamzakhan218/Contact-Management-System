@@ -85,7 +85,7 @@ router.post("/login", async (req, res) => {
 
     const payload = { _id: doesUserExists._id };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, "asdhashdakjshdasjasdbjasduhehjasjdsja", {
       expiresIn: "1h",
     });
     const user = { ...doesUserExists._doc, password: undefined };
